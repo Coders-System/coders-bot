@@ -385,7 +385,7 @@ class MongoDBClient(ApiClient):
                 raise RuntimeError
 
         try:
-            db = AsyncIOMotorClient(mongo_uri).modmail_bot
+            db = AsyncIOMotorClient(mongo_uri, io_loop=bot.loop).modmail_bot
         except ConfigurationError as e:
             logger.critical(
                 "Your MongoDB CONNECTION_URI might be copied wrong, try re-copying from the source again. "

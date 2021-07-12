@@ -35,8 +35,8 @@ custom_statuses: typing.Dict[discord.ActivityType, typing.List[str]] = {
 logger = getLogger(__name__)
 
 
-class CodersSystem(commands.Cog):
-    """A cog for handling all custom stuff for Coder's System."""
+class General(commands.Cog):
+    """A cog for handling all general events and commands"""
 
     def __init__(self, bot: ModmailBot):
         self.bot = bot
@@ -82,4 +82,4 @@ class CodersSystem(commands.Cog):
 
 
 def setup(bot: ModmailBot):
-    bot.add_cog(CodersSystem(bot))
+    bot.add_cog(General(bot))

@@ -77,7 +77,7 @@ class ModmailBot(commands.Bot):
             "cogs.modmail",
             "cogs.plugins",
             "cogs.utility",
-            "cogs.custom",
+            "cogs.general",
         ]
         self._connected = asyncio.Event()
         self.start_time = datetime.utcnow()

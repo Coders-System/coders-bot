@@ -145,7 +145,7 @@ class ConfigManager:
         "enable_eval": True,
         # github access token for private repositories
         "github_token": None,
-        "disable_autoupdates": False,
+        "disable_autoupdates": True,
         "disable_updates": False,
         # Logging
         "log_level": "INFO",
