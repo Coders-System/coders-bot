@@ -63,7 +63,7 @@ class General(commands.Cog):
     async def on_member_remove(self, member: discord.Member):
         """Triggered when member leaves server."""
         channel: discord.TextChannel = discord.utils.get(
-            member.guild.channels, name="💬-general"
+            member.guild.channels, id=int(os.environ["GENERAL_CHANNEL_ID"])
         )
         msg = random.choice(leave_messages)
 
