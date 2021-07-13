@@ -148,7 +148,7 @@ class ConfigManager:
         "disable_autoupdates": True,
         "disable_updates": False,
         # Logging
-        "log_level": "INFO",
+        "log_level": "DEBUG",
         # data collection
         "data_collection": True,
     }
