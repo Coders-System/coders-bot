@@ -123,11 +123,12 @@ class Starboard(commands.Cog):
         if emoji.is_unicode_emoji() and str(emoji) == starboard_emoji:
             channel = self.bot.get_channel(event.channel_id)
             message = await channel.fetch_message(event.message_id)
-            reactions_with_star = [
-                i for i in message.reactions if i.emoji == starboard_emoji
-            ]
 
-            star_count = len(reactions_with_star)
+            star_count = 0
+
+            for x in message.reactions:
+                if x.emoji == starboard_emoji:
+                    star_count = x.count
 
             starred_message = await self.collection.find_one({"message_id": message.id})
 
