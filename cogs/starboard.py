@@ -25,7 +25,7 @@ class Starboard(commands.Cog):
             message.guild.text_channels, name="starboard"
         )
         embed = discord.Embed(
-            title="Jump to message",
+            title="Jump to message!",
             url=message.jump_url,
             description=message.content,
             color=discord.Color.gold(),
@@ -35,6 +35,8 @@ class Starboard(commands.Cog):
             embed.set_image(url=message.attachments[0].url)
 
         embed.timestamp = datetime.datetime.utcnow()
+        embed.set_footer(text=f"Message ID: {message.id}")
+
         starboard_msg = await starboard_channel.send(
             f":star: **{stars}** | {message.channel.mention}", embed=embed
         )
@@ -92,15 +94,18 @@ class Starboard(commands.Cog):
 
         if emoji.is_unicode_emoji() and str(emoji) == starboard_emoji:
             channel = self.bot.get_channel(event.channel_id)
-            message = await channel.fetch_message(event.message_id)
+            message: discord.Message = await channel.fetch_message(event.message_id)
 
             if message.author.id == event.user_id or message.author.bot:
                 return await message.remove_reaction(starboard_emoji, event.member)
-            reactions_with_star = [
-                i for i in message.reactions if i.emoji == starboard_emoji
-            ]
+            
+            star_count = 0
 
-            if len(reactions_with_star) >= star_requirement:
+            for x in message.reactions:
+                if x.emoji == starboard_emoji:
+                    star_count = x.count
+
+            if star_count >= star_requirement:
                 starred_message = await self.collection.find_one(
                     {"message_id": message.id}
                 )
@@ -109,7 +114,7 @@ class Starboard(commands.Cog):
                         starred_message, message, starred_message["stars"] + 1
                     )
                 else:
-                    await self._add_to_starboard(message, len(reactions_with_star))
+                    await self._add_to_starboard(message, star_count)
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, event: discord.RawReactionActionEvent):
@@ -125,6 +130,10 @@ class Starboard(commands.Cog):
             star_count = len(reactions_with_star)
 
             starred_message = await self.collection.find_one({"message_id": message.id})
+
+            if not starred_message:
+                logger.info("Message not found in starboard database")
+                return
 
             if star_count < 1:
                 return await self._remove_from_starboard(starred_message, message)

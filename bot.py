@@ -1,4 +1,4 @@
-__version__ = "3.9.4"
+__version__ = "0.0.2"
 
 
 import asyncio
@@ -130,7 +130,7 @@ class ModmailBot(commands.Bot):
 
     def startup(self):
         logger.line()
-        logger.info("Coder's System Modmail")
+        logger.info("Coder's Bot")
         logger.info("v%s", __version__)
         logger.line()
         logger.info("discord.py: v%s", discord.__version__)
