@@ -28,7 +28,7 @@ class ConfigManager:
         # bot settings
         "main_category_id": None,
         "fallback_category_id": None,
-        "prefix": "?",
+        "prefix": os.environ["PREFIX"],
         "mention": "@here",
         "main_color": str(discord.Color.blurple()),
         "error_color": str(discord.Color.red()),
