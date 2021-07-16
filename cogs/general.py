@@ -78,6 +78,8 @@ class General(commands.Cog):
 
         logger.info(f"Member joined: {member}")
         await member.add_roles(role)
+        channel = discord.utils.get(client.get_all_channels(), id="783359069993435150")
+        await channel.send("Welcome to Coder's System! <:coders_system:865248145210212372>")
         return
 
 
