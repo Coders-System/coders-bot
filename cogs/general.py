@@ -68,17 +68,18 @@ class General(commands.Cog):
         msg = random.choice(leave_messages)
 
         logger.info(f"Member left: {member}")
-        await channel.send(f"Member left: `{member}`" + msg)
-        return
+        return await channel.send(f"Member left: `{member}`" + msg)
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         """Triggered when a member joins the server"""
-        role = self.bot.modmail_guild.get_role(int(os.environ["MEMBER_ROLE_ID"]))
+        if member.bot:
+            role_id = int(int(os.environ["BOT_ROLE_ID"]))
+        else:
+            role_id = int(int(os.environ["MEMBER_ROLE_ID"]))
 
-        logger.info(f"Member joined: {member}")
-        await member.add_roles(role)
-        return
+        role = self.bot.modmail_guild.get_role(role_id)
+        return await member.add_roles(role)
 
 
 def setup(bot: ModmailBot):

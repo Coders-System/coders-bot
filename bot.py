@@ -1785,14 +1785,6 @@ def main():
     except ImportError:
         pass
 
-    # check discord version
-    if discord.__version__ != "1.6.0":
-        logger.error(
-            "Dependencies are not updated, run pipenv install. discord.py version expected 1.6.0, received %s",
-            discord.__version__,
-        )
-        sys.exit(0)
-
     bot = ModmailBot()
     bot.run()
 

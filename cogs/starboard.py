@@ -98,7 +98,7 @@ class Starboard(commands.Cog):
 
             if message.author.id == event.user_id or message.author.bot:
                 return await message.remove_reaction(starboard_emoji, event.member)
-            
+
             star_count = 0
 
             for x in message.reactions:
