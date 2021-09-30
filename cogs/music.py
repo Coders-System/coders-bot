@@ -12,6 +12,7 @@ import math
 url_rx = re.compile(r"https?://(?:www\.)?.+")
 logger = getLogger(__name__)
 
+
 class Music(commands.Cog):
     """Commands related to music."""
 
@@ -22,22 +23,29 @@ class Music(commands.Cog):
     @staticmethod
     def format_timestamp(millis: int):
         millis = int(millis)
-        seconds=(millis/1000)%60
+        seconds = (millis / 1000) % 60
         seconds = int(seconds)
-        minutes=(millis/(1000*60))%60
+        minutes = (millis / (1000 * 60)) % 60
         minutes = int(minutes)
-        hours=(millis/(1000*60*60))%24
+        hours = (millis / (1000 * 60 * 60)) % 24
 
         if int(hours) != 0:
-            return "%s:%s:%s" % (int(hours), int(minutes) if int(minutes) > 10 else f"0{int(minutes)}", int(seconds) if int(seconds) > 10 else f"0{int(seconds)}")
-        return "%s:%s" % (int(minutes) if int(minutes) > 10 else f"0{int(minutes)}", int(seconds) if int(seconds) > 10 else f"0{int(seconds)}")
+            return "%s:%s:%s" % (
+                int(hours),
+                int(minutes) if int(minutes) > 10 else f"0{int(minutes)}",
+                int(seconds) if int(seconds) > 10 else f"0{int(seconds)}",
+            )
+        return "%s:%s" % (
+            int(minutes) if int(minutes) > 10 else f"0{int(minutes)}",
+            int(seconds) if int(seconds) > 10 else f"0{int(seconds)}",
+        )
 
     def cog_unload(self) -> None:
         """This removes any event hooks that were registered when the cog is unloaded"""
         self.bot.lavalink._event_hooks.clear()
 
     async def cog_before_invoke(self, ctx: commands.Context) -> bool:
-        """Command before-invoke handler. """
+        """Command before-invoke handler."""
         guild_check = ctx.guild is not None
         if guild_check:
             await self.ensure_voice(ctx)
@@ -49,26 +57,30 @@ class Music(commands.Cog):
             await ctx.reply(error.original)
 
     async def ensure_voice(self, ctx: commands.Context) -> None:
-        """ This check ensures that the bot and command author are in the same voicechannel. """
+        """This check ensures that the bot and command author are in the same voicechannel."""
         player = self.bot.lavalink.player_manager.create(
             ctx.guild.id, endpoint=str(ctx.guild.region)
         )
-        player.store("channel_id", ctx.channel.id) # Storing channel ID in player to be used on events
+        player.store(
+            "channel_id", ctx.channel.id
+        )  # Storing channel ID in player to be used on events
         should_connect = ctx.command.name in ("play",)
 
         if not ctx.author.voice or not ctx.author.voice.channel:
             # Our cog_command_error handler catches this and sends the error msg.
-            raise commands.CommandInvokeError(f"🔊 You are not connected to a voice channel.")
+            raise commands.CommandInvokeError(
+                f"🔊 You are not connected to a voice channel."
+            )
 
         if not player.is_connected:
             if not should_connect:
-                raise commands.CommandInvokeError("❌ I am not connected to a voice channel.")
+                raise commands.CommandInvokeError(
+                    "❌ I am not connected to a voice channel."
+                )
 
             permissions = ctx.author.voice.channel.permissions_for(ctx.me)
 
-            if (
-                not permissions.connect or not permissions.speak
-            ):
+            if not permissions.connect or not permissions.speak:
                 raise commands.CommandInvokeError(
                     "I need the `CONNECT` and `SPEAK` permissions."
                 )
@@ -83,18 +95,22 @@ class Music(commands.Cog):
         if isinstance(event, lavalink.events.QueueEndEvent):
             guild_id = int(event.player.guild_id)
             return await self.connect_to(guild_id, None)
-        
+
         elif isinstance(event, lavalink.events.TrackStartEvent):
             # Send now playing message whenever a track starts
-            channel_id: int = event.player.fetch('channel_id')
+            channel_id: int = event.player.fetch("channel_id")
             channel = self.bot.get_channel(channel_id)
             embed = discord.Embed(color=discord.Color.blue())
             embed.description = f"**[{event.track.title}]({event.track.uri})**"
             embed.add_field(name="By", value=event.track.author)
-            embed.add_field(name="Duration", value=self.format_timestamp(event.track.duration))
+            embed.add_field(
+                name="Duration", value=self.format_timestamp(event.track.duration)
+            )
             requester = self.bot.get_user(event.track.requester)
-            embed.set_footer(text=f'Requested by: {requester}')
-            embed.set_thumbnail(url=f"https://i3.ytimg.com/vi/{event.track.identifier}/maxresdefault.jpg")
+            embed.set_footer(text=f"Requested by: {requester}")
+            embed.set_thumbnail(
+                url=f"https://i3.ytimg.com/vi/{event.track.identifier}/maxresdefault.jpg"
+            )
             embed.set_author(name="Now Playing", url=requester.avatar_url)
 
             return await channel.send(embed=embed)
@@ -106,9 +122,11 @@ class Music(commands.Cog):
 
     @commands.command(aliases=["p"])
     async def play(self, ctx: commands.Context, *, query: str) -> None:
-        """Searches and plays a song from a given query. """
+        """Searches and plays a song from a given query."""
         # Get the player for this guild from cache.
-        player: lavalink.DefaultPlayer = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        player: lavalink.DefaultPlayer = self.bot.lavalink.player_manager.get(
+            ctx.guild.id
+        )
         query = query.strip("<>")
 
         if not url_rx.match(query):
@@ -130,14 +148,18 @@ class Music(commands.Cog):
                 f'{results["playlistInfo"]["name"]} - {len(tracks)} tracks'
             )
         else:
-            track = lavalink.models.AudioTrack(results["tracks"][0], ctx.author.id, recommended=True)
+            track = lavalink.models.AudioTrack(
+                results["tracks"][0], ctx.author.id, recommended=True
+            )
             track.duration
             if player.is_playing:
                 embed.description = f"**[{track.title}]({track.uri})**"
                 embed.add_field(name="By", value=track.author)
                 embed.add_field(name="Position in queue", value=len(player.queue) + 1)
-                embed.set_thumbnail(url=f"https://i3.ytimg.com/vi/{track.identifier}/maxresdefault.jpg")
-                embed.set_footer(text=f'Requested by: {ctx.author}')
+                embed.set_thumbnail(
+                    url=f"https://i3.ytimg.com/vi/{track.identifier}/maxresdefault.jpg"
+                )
+                embed.set_footer(text=f"Requested by: {ctx.author}")
                 embed.set_author(name="Added to queue", url=ctx.author.avatar_url)
                 await ctx.reply(embed=embed)
             else:
@@ -244,13 +266,18 @@ class Music(commands.Cog):
         playing: lavalink.AudioTrack = player.current
         desc = f"[**{playing.title}**]({playing.uri}) (Requested by {ctx.guild.get_member(playing.requester).mention})\n\n"
         position = ["=" for x in range(30)]
-        position[math.floor(player.position/playing.duration * len(position))] = "**>**"
+        position[
+            math.floor(player.position / playing.duration * len(position))
+        ] = "**>**"
         embed = discord.Embed(
             title="Currently Playing",
             color=discord.Color.blue(),
-            description=desc + f"**{self.format_timestamp(player.position)}** {''.join(position)} **{self.format_timestamp(playing.duration)}**",
+            description=desc
+            + f"**{self.format_timestamp(player.position)}** {''.join(position)} **{self.format_timestamp(playing.duration)}**",
         )
-        embed.set_thumbnail(url=f"https://i3.ytimg.com/vi/{playing.identifier}/maxresdefault.jpg")
+        embed.set_thumbnail(
+            url=f"https://i3.ytimg.com/vi/{playing.identifier}/maxresdefault.jpg"
+        )
         await ctx.send(embed=embed)
 
     @commands.command()

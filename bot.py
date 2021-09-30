@@ -131,7 +131,6 @@ class ModmailBot(commands.Bot):
 
         return HostingMethod.OTHER
 
-
     def startup(self):
         logger.line()
         logger.info("Coder's Bot")
@@ -687,7 +686,11 @@ class ModmailBot(commands.Bot):
         if self.lavalink == None:
             self.lavalink = lavalink.Client(self.user.id)
             self.lavalink.add_node(
-                os.environ["LAVALINK_HOST"], 2333, os.environ["LAVALINK_PASSWORD"], "eu", "default-node"
+                os.environ["LAVALINK_HOST"],
+                2333,
+                os.environ["LAVALINK_PASSWORD"],
+                "eu",
+                "default-node",
             )
             self.add_listener(self.lavalink.voice_update_handler, "on_socket_response")
             logger.info("Initialized connection to lavalink server")
