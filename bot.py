@@ -8,6 +8,7 @@ import os
 import re
 import signal
 import sys
+import lavalink
 import typing
 from datetime import datetime
 from subprocess import PIPE
@@ -79,9 +80,11 @@ class ModmailBot(commands.Bot):
             "cogs.utility",
             "cogs.general",
             "cogs.starboard",
+            "cogs.music",
         ]
         self._connected = asyncio.Event()
         self.start_time = datetime.utcnow()
+        self.lavalink: typing.Optional[lavalink.Client] = None
 
         self.config = ConfigManager(self)
         self.config.populate_cache()
@@ -127,6 +130,7 @@ class ModmailBot(commands.Bot):
             return HostingMethod.SCREEN
 
         return HostingMethod.OTHER
+
 
     def startup(self):
         logger.line()
@@ -678,6 +682,15 @@ class ModmailBot(commands.Bot):
             logger.warning(
                 "If the external servers are valid, you may ignore this message."
             )
+
+        # Initialize lavalink connection
+        if self.lavalink == None:
+            self.lavalink = lavalink.Client(self.user.id)
+            self.lavalink.add_node(
+                os.environ["LAVALINK_HOST"], 2333, os.environ["LAVALINK_PASSWORD"], "eu", "default-node"
+            )
+            self.add_listener(self.lavalink.voice_update_handler, "on_socket_response")
+            logger.info("Initialized connection to lavalink server")
 
     async def convert_emoji(self, name: str) -> str:
         ctx = SimpleNamespace(bot=self, guild=self.modmail_guild)

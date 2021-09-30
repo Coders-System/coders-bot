@@ -1,6 +1,16 @@
 version: "3"
 
 services:
-    bot:
-        build: .
-        container_name: coders-system-modmail
+  bot:
+    build: .
+    restart: unless-stopped
+    container_name: coders-bot
+    links:
+      - "lavalink"
+
+  lavalink:
+    build:
+      context: ./lavalink
+    env_file: .env
+    restart: unless-stopped
+    container_name: coders-bot-lavalink

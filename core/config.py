@@ -148,9 +148,9 @@ class ConfigManager:
         "disable_autoupdates": True,
         "disable_updates": False,
         # Logging
-        "log_level": "DEBUG",
+        "log_level": "INFO",
         # data collection
-        "data_collection": True,
+        "data_collection": False,
     }
 
     colors = {"mod_color", "recipient_color", "main_color", "error_color"}

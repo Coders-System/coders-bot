@@ -839,7 +839,7 @@
     ]
   },
   "log_level": {
-    "default": "INFO",
+    "default": "DEBUG",
     "description": "The logging level for logging to stdout.",
     "examples": [
     ],

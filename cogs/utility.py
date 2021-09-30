@@ -62,7 +62,7 @@ class ModmailHelpCommand(commands.HelpCommand):
         ):
             perm_level = bot.command_perm(cmd.qualified_name)
             if perm_level is PermissionLevel.INVALID:
-                format_ = f"`{prefix + cmd.qualified_name}` "
+                format_ = f"`[0] {prefix + cmd.qualified_name}` "
             else:
                 format_ = f"`[{perm_level}] {prefix + cmd.qualified_name}` "
 
@@ -118,6 +118,7 @@ class ModmailHelpCommand(commands.HelpCommand):
         # always come first
         default_cogs = [
             bot.get_cog("Modmail"),
+            bot.get_cog("Music"),
             bot.get_cog("Utility"),
             bot.get_cog("Plugins"),
         ]
@@ -272,7 +273,6 @@ class Utility(commands.Cog):
         self.bot.help_command = ModmailHelpCommand(
             command_attrs={
                 "help": "Shows this help message.",
-                "checks": [checks.has_permissions_predicate(PermissionLevel.REGULAR)],
             },
         )
         self.bot.help_command.cog = self
