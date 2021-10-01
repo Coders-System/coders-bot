@@ -9,6 +9,7 @@ import re
 import signal
 import sys
 import lavalink
+import json
 import typing
 from datetime import datetime
 from subprocess import PIPE
@@ -56,11 +57,10 @@ temp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "temp")
 if not os.path.exists(temp_dir):
     os.mkdir(temp_dir)
 
-if sys.platform == "win32":
-    try:
-        asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-    except AttributeError:
-        logger.error("Failed to use WindowsProactorEventLoopPolicy.", exc_info=True)
+if os.name == "nt":
+    # Setting event loop policy since asyncio crashes with RuntimeError: Event loop is closed, mostly because of aiohttp
+    # https://github.com/aio-libs/aiohttp/issues/4324
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 
 class ModmailBot(commands.Bot):
@@ -69,19 +69,15 @@ class ModmailBot(commands.Bot):
         super().__init__(
             command_prefix=None, intents=intents
         )  # implemented in `get_prefix`
-        self._session = None
+        self._session = self.loop.run_until_complete(self._create_client_session())
         self._api = None
         self.metadata_loop = None
         self.autoupdate_loop = None
         self.formatter = SafeFormatter()
-        self.loaded_cogs = [
-            "cogs.modmail",
-            "cogs.plugins",
-            "cogs.utility",
-            "cogs.general",
-            "cogs.starboard",
-            "cogs.music",
-        ]
+
+        with open("./cogs.json") as fp:
+            self.loaded_cogs = json.load(fp)["loaded_cogs"]
+
         self._connected = asyncio.Event()
         self.start_time = datetime.utcnow()
         self.lavalink: typing.Optional[lavalink.Client] = None
@@ -141,11 +137,12 @@ class ModmailBot(commands.Bot):
 
         for cog in self.loaded_cogs:
             logger.debug("Loading %s.", cog)
-            try:
-                self.load_extension(cog)
-                logger.debug("Successfully loaded %s.", cog)
-            except Exception:
-                logger.exception("Failed to load %s.", cog)
+
+            self.load_extension(cog)
+            logger.info("Successfully loaded %s.", cog)
+            # except Exception:
+
+            #     logger.info("Failed to load %s.", cog)
         logger.line("debug")
 
     def _configure_logging(self):
@@ -177,9 +174,10 @@ class ModmailBot(commands.Bot):
 
     @property
     def session(self) -> ClientSession:
-        if self._session is None:
-            self._session = ClientSession(loop=self.loop)
         return self._session
+
+    async def _create_client_session(self):
+        return ClientSession(loop=self.loop)
 
     @property
     def api(self) -> ApiClient:
@@ -239,8 +237,7 @@ class ModmailBot(commands.Bot):
             finally:
                 if not self.is_closed():
                     await self.close()
-                if self._session:
-                    await self._session.close()
+                await self._session.close()
 
         def stop_loop_on_completion(f):
             loop.stop()
@@ -681,19 +678,6 @@ class ModmailBot(commands.Bot):
             logger.warning(
                 "If the external servers are valid, you may ignore this message."
             )
-
-        # Initialize lavalink connection
-        if self.lavalink == None:
-            self.lavalink = lavalink.Client(self.user.id)
-            self.lavalink.add_node(
-                os.environ["LAVALINK_HOST"],
-                2333,
-                os.environ["LAVALINK_PASSWORD"],
-                "eu",
-                "default-node",
-            )
-            self.add_listener(self.lavalink.voice_update_handler, "on_socket_response")
-            logger.info("Initialized connection to lavalink server")
 
     async def convert_emoji(self, name: str) -> str:
         ctx = SimpleNamespace(bot=self, guild=self.modmail_guild)
