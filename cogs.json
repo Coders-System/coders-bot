@@ -6,6 +6,7 @@
     "cogs.general",
     "cogs.starboard",
     "cogs.music",
-    "cogs.sudo"
+    "cogs.sudo",
+    "cogs.info"
   ]
 }

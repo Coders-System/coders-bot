@@ -12,3 +12,4 @@ python-dotenv==0.14.0
 websockets==9.1
 lavalink
 DiscordUtils
+psutil

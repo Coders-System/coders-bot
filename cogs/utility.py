@@ -55,6 +55,9 @@ class ModmailHelpCommand(commands.HelpCommand):
         prefix = self.clean_prefix
 
         formats = [""]
+        if cog is None:
+            return
+
         for cmd in await self.filter_commands(
             cog.get_commands() if not no_cog else cog,
             sort=True,
@@ -117,8 +120,9 @@ class ModmailHelpCommand(commands.HelpCommand):
 
         # always come first
         default_cogs = [
-            bot.get_cog("Modmail"),
+            bot.get_cog("Info"),
             bot.get_cog("Music"),
+            bot.get_cog("Modmail"),
             bot.get_cog("Utility"),
             bot.get_cog("Plugins"),
         ]
@@ -126,6 +130,8 @@ class ModmailHelpCommand(commands.HelpCommand):
         default_cogs.extend(c for c in cogs if c not in default_cogs)
 
         for cog in default_cogs:
+            if cog is None:
+                continue
             embeds.extend(await self.format_cog_help(cog))
         if no_cog_commands:
             embeds.extend(await self.format_cog_help(no_cog_commands, no_cog=True))
@@ -579,18 +585,6 @@ class Utility(commands.Cog):
         await self.bot.change_presence(activity=activity, status=status)
 
         return activity, status
-
-    @commands.command()
-    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    @utils.trigger_typing
-    async def ping(self, ctx):
-        """Pong! Returns your websocket latency."""
-        embed = discord.Embed(
-            title="Pong! Websocket Latency:",
-            description=f"{self.bot.ws.latency * 1000:.4f} ms",
-            color=self.bot.main_color,
-        )
-        return await ctx.send(embed=embed)
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
