@@ -20,6 +20,22 @@ class Music(commands.Cog):
         self.bot = bot
         lavalink.add_event_hook(self.track_hook)
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        # Initialize lavalink connection
+        bot = self.bot
+        if bot.lavalink == None:
+            bot.lavalink = lavalink.Client(bot.user.id)
+            bot.lavalink.add_node(
+                os.environ["LAVALINK_HOST"],
+                2333,
+                os.environ["LAVALINK_PASSWORD"],
+                "eu",
+                "default-node",
+            )
+            bot.add_listener(bot.lavalink.voice_update_handler, "on_socket_response")
+            logger.info("Initialized connection to lavalink server")
+
     @staticmethod
     def format_timestamp(millis: int):
         millis = int(millis)

@@ -1,0 +1,12 @@
+{
+  "loaded_cogs": [
+    "cogs.modmail",
+    "cogs.plugins",
+    "cogs.utility",
+    "cogs.general",
+    "cogs.starboard",
+    "cogs.music",
+    "cogs.sudo",
+    "cogs.info"
+  ]
+}

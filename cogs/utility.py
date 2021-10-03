@@ -55,6 +55,9 @@ class ModmailHelpCommand(commands.HelpCommand):
         prefix = self.clean_prefix
 
         formats = [""]
+        if cog is None:
+            return
+
         for cmd in await self.filter_commands(
             cog.get_commands() if not no_cog else cog,
             sort=True,
@@ -117,8 +120,9 @@ class ModmailHelpCommand(commands.HelpCommand):
 
         # always come first
         default_cogs = [
-            bot.get_cog("Modmail"),
+            bot.get_cog("Info"),
             bot.get_cog("Music"),
+            bot.get_cog("Modmail"),
             bot.get_cog("Utility"),
             bot.get_cog("Plugins"),
         ]
@@ -126,6 +130,8 @@ class ModmailHelpCommand(commands.HelpCommand):
         default_cogs.extend(c for c in cogs if c not in default_cogs)
 
         for cog in default_cogs:
+            if cog is None:
+                continue
             embeds.extend(await self.format_cog_help(cog))
         if no_cog_commands:
             embeds.extend(await self.format_cog_help(no_cog_commands, no_cog=True))
@@ -579,18 +585,6 @@ class Utility(commands.Cog):
         await self.bot.change_presence(activity=activity, status=status)
 
         return activity, status
-
-    @commands.command()
-    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    @utils.trigger_typing
-    async def ping(self, ctx):
-        """Pong! Returns your websocket latency."""
-        embed = discord.Embed(
-            title="Pong! Websocket Latency:",
-            description=f"{self.bot.ws.latency * 1000:.4f} ms",
-            color=self.bot.main_color,
-        )
-        return await ctx.send(embed=embed)
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
@@ -2065,86 +2059,6 @@ class Utility(commands.Cog):
                     )
                     embed.set_footer(text="Force update")
                     await ctx.send(embed=embed)
-
-    @commands.command(hidden=True, name="eval")
-    @checks.has_permissions(PermissionLevel.OWNER)
-    async def eval_(self, ctx, *, body: str):
-        """Evaluates Python code."""
-
-        logger.warning("Running eval command:\n%s", body)
-
-        env = {
-            "ctx": ctx,
-            "bot": self.bot,
-            "channel": ctx.channel,
-            "author": ctx.author,
-            "guild": ctx.guild,
-            "message": ctx.message,
-            "source": inspect.getsource,
-            "discord": __import__("discord"),
-        }
-
-        env.update(globals())
-
-        body = utils.cleanup_code(body)
-        stdout = StringIO()
-
-        to_compile = f'async def func():\n{indent(body, "  ")}'
-
-        def paginate(text: str):
-            """Simple generator that paginates text."""
-            last = 0
-            pages = []
-            appd_index = curr = None
-            for curr in range(0, len(text)):
-                if curr % 1980 == 0:
-                    pages.append(text[last:curr])
-                    last = curr
-                    appd_index = curr
-            if appd_index != len(text) - 1:
-                pages.append(text[last:curr])
-            return list(filter(lambda a: a != "", pages))
-
-        try:
-            exec(to_compile, env)  # pylint: disable=exec-used
-        except Exception as exc:
-            await ctx.send(f"```py\n{exc.__class__.__name__}: {exc}\n```")
-            return await self.bot.add_reaction(ctx.message, "\u2049")
-
-        func = env["func"]
-        try:
-            with redirect_stdout(stdout):
-                ret = await func()
-        except Exception:
-            value = stdout.getvalue()
-            await ctx.send(f"```py\n{value}{traceback.format_exc()}\n```")
-            return await self.bot.add_reaction(ctx.message, "\u2049")
-
-        else:
-            value = stdout.getvalue()
-            if ret is None:
-                if value:
-                    try:
-                        await ctx.send(f"```py\n{value}\n```")
-                    except Exception:
-                        paginated_text = paginate(value)
-                        for page in paginated_text:
-                            if page == paginated_text[-1]:
-                                await ctx.send(f"```py\n{page}\n```")
-                                break
-                            await ctx.send(f"```py\n{page}\n```")
-            else:
-                try:
-                    await ctx.send(f"```py\n{value}{ret}\n```")
-                except Exception:
-                    paginated_text = paginate(f"{value}{ret}")
-                    for page in paginated_text:
-                        if page == paginated_text[-1]:
-                            await ctx.send(f"```py\n{page}\n```")
-                            break
-                        await ctx.send(f"```py\n{page}\n```")
-
-        await self.bot.add_reaction(ctx.message, "\u2705")
 
 
 def setup(bot):
