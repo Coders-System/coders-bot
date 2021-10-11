@@ -7,6 +7,7 @@
     "cogs.starboard",
     "cogs.music",
     "cogs.sudo",
-    "cogs.info"
+    "cogs.info",
+    "cogs.tags"
   ]
 }
