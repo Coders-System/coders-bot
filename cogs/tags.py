@@ -8,10 +8,6 @@ import datetime
 
 logger = getLogger(__name__)
 
-starboard_emoji = "⭐"
-star_requirement = int(os.environ["STARBOARD_REQUIRED_STARS"])
-
-
 class Tags(commands.Cog):
     """A cog for tags"""
 
@@ -22,12 +18,11 @@ class Tags(commands.Cog):
     @commands.command(hidden=True)
     @commands.has_role("Staff")
     async def tag_add(self,ctx):
-        await ctx.send("added tag boi")
+        await ctx.send("Add tags")
 
     @commands.command(hidden=True)
-    @commands.has_role("Staff")
     async def tag_list(self,ctx):
-        await ctx.send(" i am the tags command")
+        await ctx.send("List tags")
 
 def setup(bot: ModmailBot):
     bot.add_cog(Tags(bot))
