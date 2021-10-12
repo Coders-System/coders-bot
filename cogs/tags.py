@@ -12,8 +12,6 @@ logger = getLogger(__name__)
 STAFF_ROLE_ID = int(os.environ["STAFF_ROLE_ID"])
 
 
-# TODO add embed to rm and edit commands
-# TODO add author check for edit and delete cmd, so that only author can delete/edit their tags
 class Tags(commands.Cog):
     """A cog for all tag-related functionality."""
 

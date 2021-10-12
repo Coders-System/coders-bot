@@ -10,4 +10,6 @@ Make sure you have Docker installed
 
 2. Rename `.env.example` to `.env` and fill in your credentials
 
-3. Now run `docker-compose up` to start the bot. If you want to stop it, just run `docker-compose down`. After updating the code, run `docker-compose up --build` to rebuild your container
+3. Rename `cogs.example.json` to `cogs.json`.
+
+4. Now run `docker-compose up` to start the bot. If you want to stop it, just run `docker-compose down`. After updating the code, run `docker-compose up --build` to rebuild your container
