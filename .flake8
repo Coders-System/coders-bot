@@ -1,4 +1,4 @@
 [flake8]
-ignore = E501, F405, E203, W503, F403
+ignore = E501, F405, E203, W503, F403, E731
 exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,venv
 max-complexity = 50

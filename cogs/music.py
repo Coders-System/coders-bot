@@ -24,7 +24,7 @@ class Music(commands.Cog):
     async def on_ready(self):
         # Initialize lavalink connection
         bot = self.bot
-        if bot.lavalink == None:
+        if bot.lavalink is None:
             bot.lavalink = lavalink.Client(bot.user.id)
             bot.lavalink.add_node(
                 os.environ["LAVALINK_HOST"],
@@ -85,7 +85,7 @@ class Music(commands.Cog):
         if not ctx.author.voice or not ctx.author.voice.channel:
             # Our cog_command_error handler catches this and sends the error msg.
             raise commands.CommandInvokeError(
-                f"🔊 You are not connected to a voice channel."
+                "🔊 You are not connected to a voice channel."
             )
 
         if not player.is_connected:

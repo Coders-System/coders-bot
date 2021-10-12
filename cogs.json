@@ -5,8 +5,8 @@
     "cogs.utility",
     "cogs.general",
     "cogs.starboard",
-    "cogs.music",
     "cogs.sudo",
+    "cogs.music",
     "cogs.info",
     "cogs.tags"
   ]
