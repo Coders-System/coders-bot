@@ -97,6 +97,7 @@ venv2/
 ENV/
 env.bak/
 venv.bak/
+cogs.json
 
 # Spyder project settings
 .spyderproject

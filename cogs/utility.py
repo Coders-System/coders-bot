@@ -1,15 +1,11 @@
 import asyncio
-import inspect
 import os
 import re
-import traceback
-from contextlib import redirect_stdout
 from difflib import get_close_matches
-from io import BytesIO, StringIO
+from io import BytesIO
 from itertools import takewhile, zip_longest
 from json import JSONDecodeError
 from subprocess import PIPE
-from textwrap import indent
 from types import SimpleNamespace
 from typing import Union
 

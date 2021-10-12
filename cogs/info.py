@@ -7,7 +7,6 @@ import typing
 import time
 import psutil
 import os
-import sys
 
 
 line_break = "\n"

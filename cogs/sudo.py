@@ -85,7 +85,9 @@ class Sudo(commands.Cog):
             )
             pages.append(em)
 
-        paginator = DiscordUtils.Pagination.AutoEmbedPaginator(ctx)
+        paginator = DiscordUtils.Pagination.AutoEmbedPaginator(
+            ctx, remove_reactions=True
+        )
         return await paginator.run(pages)
 
     @commands.command(hidden=True)
