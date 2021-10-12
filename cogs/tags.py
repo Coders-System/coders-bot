@@ -85,24 +85,41 @@ class Tags(commands.Cog):
 
         return await ctx.reply(embed=embed)
 
-    @tag.command(hidden=True)
+    @tag.command(aliases=["rm", "del", "delete"])
     @commands.has_role(STAFF_ROLE_ID)
-    async def rm(self, ctx: commands.Context, tag_name):
-        await ctx.send(f"Removing {tag_name}")
-        await self.collection.remove_one({"name": tag_name})
+    async def remove(self, ctx: commands.Context, tag_name):
+        existing_tag = await self.collection.find_one({"name": tag_name})
+        if not existing_tag:
+            return await ctx.reply(f"Tag **{tag_name}** not found.")
 
-    @tag.command(hidden=True)
+        if ctx.author.id != int(existing_tag["author"]):
+            return await ctx.reply(
+                "You are not the author of this tag, hence you cannot delete it."
+            )
+
+        await self.collection.delete_one({"name": tag_name})
+        return await ctx.reply(f"Deleted tag **{tag_name}**.")
+
+    @tag.command(aliases=["update"])
     @commands.has_role(STAFF_ROLE_ID)
-    async def edit(self, ctx: commands.Context, tag_name, *, text):
-        await ctx.send(f"Editing tag: {tag_name}\n with new text: {text}")
-        data = {"name": tag_name, "content": text}
+    async def edit(self, ctx: commands.Context, tag_name, *, tag_content):
+        existing_tag = await self.collection.find_one({"name": tag_name})
+        if not existing_tag:
+            return await ctx.reply(f"Tag **{tag_name}** not found.")
 
+        if ctx.author.id != int(existing_tag["author"]):
+            return await ctx.reply(
+                "You are not the author of this tag, hence you cannot edit it."
+            )
+
+        existing_tag["content"] = tag_content
         await self.collection.replace_one(
             {
                 "name": tag_name,
             },
-            data,
+            existing_tag,
         )
+        return await ctx.reply(f"Edited tag **{tag_name}**.")
 
 
 def setup(bot: ModmailBot):
