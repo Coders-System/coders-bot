@@ -149,11 +149,10 @@ class News(commands.Cog):
         channel = self.bot.get_channel(int(self.channel_id))
         async with self.bot.session.post(API_ENDPOINT, json=GQL_PAYLOAD) as r:
             data = await r.json()
-
-        msg = await channel.send(
+        
+        await channel.send(
             f"<@&{self.role_id}> Today is **{today}**\nHere's the latest tech news for you, all from our curated list \\:)"
         )
-        await msg.publish()
 
         for entry in data["data"]["page"]["edges"]:
             post = entry["node"]
@@ -174,8 +173,7 @@ class News(commands.Cog):
                 icon_url="https://assets.website-files.com/5e0a5d9d743608d0f3ea6753/5f350958935a5ccf103429ce_daily.dev%20-%2032.png",
             )
 
-            msg = await channel.send(embed=embed)
-            await msg.publish()
+            await channel.send(embed=embed)
 
 
 def setup(bot: ModmailBot):
