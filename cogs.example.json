@@ -8,6 +8,7 @@
     "cogs.sudo",
     "cogs.music",
     "cogs.info",
-    "cogs.tags"
+    "cogs.tags",
+    "cogs.news"
   ]
 }
