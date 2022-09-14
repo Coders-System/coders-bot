@@ -4,4 +4,4 @@ WORKDIR /opt/lavalink
 
 EXPOSE 2333
 
-CMD ./run_lavalink.sh
+CMD ["/bin/bash" ,"run_lavalink.sh"]
