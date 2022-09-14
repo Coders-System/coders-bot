@@ -4,6 +4,7 @@ from datetime import datetime
 
 import discord
 import os
+import aiohttp
 
 
 line_break = "\n"
@@ -147,13 +148,13 @@ class News(commands.Cog):
     async def post_news(self):
         today = datetime.now().strftime(r"%B %d, %Y")
         channel = self.bot.get_channel(int(self.channel_id))
-        async with self.bot.session.post(API_ENDPOINT, json=GQL_PAYLOAD) as r:
+        async with aiohttp.ClientSession() as session:
+          async with session.post(API_ENDPOINT, json=GQL_PAYLOAD) as r:
             data = await r.json()
-        
+
         await channel.send(
             f"<@&{self.role_id}> Today is **{today}**\nHere's the latest tech news for you, all from our curated list \\:)"
         )
-
         for entry in data["data"]["page"]["edges"]:
             post = entry["node"]
             embed = discord.Embed(
