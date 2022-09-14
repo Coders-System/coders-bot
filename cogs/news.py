@@ -112,7 +112,7 @@ GQL_PAYLOAD = {
     "query": FEED_QUERY,
     "variables": {
         "version": 7,
-        "ranking": "POPULARITY",
+        "ranking": "TIME",
         "first": 3,
         "loggedIn": False,
         "unreadOnly": False,
@@ -149,8 +149,8 @@ class News(commands.Cog):
         today = datetime.now().strftime(r"%B %d, %Y")
         channel = self.bot.get_channel(int(self.channel_id))
         async with aiohttp.ClientSession() as session:
-          async with session.post(API_ENDPOINT, json=GQL_PAYLOAD) as r:
-            data = await r.json()
+            async with session.post(API_ENDPOINT, json=GQL_PAYLOAD) as r:
+                data = await r.json()
 
         await channel.send(
             f"<@&{self.role_id}> Today is **{today}**\nHere's the latest tech news for you, all from our curated list \\:)"
