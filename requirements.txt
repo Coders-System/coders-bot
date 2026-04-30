@@ -12,3 +12,4 @@ websockets==9.1
 lavalink
 DiscordUtils
 psutil
+setuptools==81.0.0
