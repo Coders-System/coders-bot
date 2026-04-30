@@ -25,6 +25,7 @@ from pkg_resources import parse_version
 
 from core.utils import tryint
 
+
 try:
     # noinspection PyUnresolvedReferences
     from colorama import init
@@ -1635,11 +1636,9 @@ class ModmailBot(commands.Bot):
         if info.team is not None:
             data.update(
                 {
-                    "owner_name": (
-                        info.team.owner.name
-                        if info.team.owner is not None
-                        else "No Owner"
-                    ),
+                    "owner_name": info.team.owner.name
+                    if info.team.owner is not None
+                    else "No Owner",
                     "owner_id": info.team.owner_id,
                     "team": True,
                 }

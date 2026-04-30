@@ -28,9 +28,8 @@ from core.models import (
 from core.utils import trigger_typing, truncate
 from core.paginator import EmbedPaginatorSession, MessagePaginatorSession
 
-logger = getLogger(__name__)
 
-BOTTRAP_CHANNEL_ID = int(os.environ["BOTTRAP_CHANNEL_ID"])
+logger = getLogger(__name__)
 
 
 class ModmailHelpCommand(commands.HelpCommand):
@@ -189,8 +188,10 @@ class ModmailHelpCommand(commands.HelpCommand):
             format_ += f"`{branch} {command.name}` - {command.short_doc}\n"
 
         embed.add_field(name="Sub Command(s)", value=format_[:1024], inline=False)
-        embed.set_footer(text=f'Type "{self.clean_prefix}{
-                self.command_attrs["name"]} command" ' "for more info on a command.")
+        embed.set_footer(
+            text=f'Type "{self.clean_prefix}{self.command_attrs["name"]} command" '
+            "for more info on a command."
+        )
 
         await self.get_destination().send(embed=embed)
 
@@ -212,8 +213,7 @@ class ModmailHelpCommand(commands.HelpCommand):
                 embed = discord.Embed(
                     title="Error",
                     color=self.context.bot.error_color,
-                    description=f"Alias `{
-                        command}` is invalid, this alias will now be deleted."
+                    description=f"Alias `{command}` is invalid, this alias will now be deleted."
                     "This alias will now be deleted.",
                 )
                 embed.add_field(name=f"{command}` used to be:", value=val)
@@ -235,8 +235,10 @@ class ModmailHelpCommand(commands.HelpCommand):
                     for i, val in enumerate(values, start=1):
                         embed.add_field(name=f"Step {i}:", value=val)
 
-            embed.set_footer(text=f'Type "{self.clean_prefix}{
-                    self.command_attrs["name"]} alias" ' "for more details on aliases.")
+            embed.set_footer(
+                text=f'Type "{self.clean_prefix}{self.command_attrs["name"]} alias" '
+                "for more details on aliases."
+            )
             return await self.get_destination().send(embed=embed)
 
         logger.warning("CommandNotFound: %s", error)
@@ -297,8 +299,7 @@ class Utility(commands.Cog):
             return await ctx.send(
                 embed=discord.Embed(
                     color=self.bot.error_color,
-                    description=f"The specified version `{
-                        version}` could not be found.",
+                    description=f"The specified version `{version}` could not be found.",
                 )
             )
 
@@ -648,8 +649,7 @@ class Utility(commands.Cog):
             mention = " ".join(mention)
             embed = discord.Embed(
                 title="Changed mention!",
-                description=f'On thread creation the bot now says "{
-                    mention}".',
+                description=f'On thread creation the bot now says "{mention}".',
                 color=self.bot.main_color,
             )
             self.bot.config["mention"] = mention
@@ -799,8 +799,7 @@ class Utility(commands.Cog):
                     description=f"`{key}` is an invalid key.",
                 )
                 embed.set_footer(
-                    text=f'Type "{
-                        self.bot.prefix}config options" for a list of config variables.'
+                    text=f'Type "{self.bot.prefix}config options" for a list of config variables.'
                 )
 
         else:
@@ -815,8 +814,7 @@ class Utility(commands.Cog):
 
             for name, value in config.items():
                 if name in self.bot.config.public_keys:
-                    embed.add_field(name=name, value=f"`{
-                                    value}`", inline=False)
+                    embed.add_field(name=name, value=f"`{value}`", inline=False)
 
         return await ctx.send(embed=embed)
 
@@ -929,8 +927,7 @@ class Utility(commands.Cog):
                 embed = discord.Embed(
                     title="Error",
                     color=self.bot.error_color,
-                    description=f"Alias `{
-                        name}` is invalid, this alias will now be deleted."
+                    description=f"Alias `{name}` is invalid, this alias will now be deleted."
                     "This alias will now be deleted.",
                 )
                 embed.add_field(
@@ -1054,8 +1051,7 @@ class Utility(commands.Cog):
                     else:
                         embed.description = (
                             "The command you are attempting to point "
-                            f"to on step {i} does not exist: `{
-                                linked_command}`."
+                            f"to on step {i} does not exist: `{linked_command}`."
                         )
 
                     return embed
@@ -1089,24 +1085,21 @@ class Utility(commands.Cog):
             embed = discord.Embed(
                 title="Error",
                 color=self.bot.error_color,
-                description=f"A command with the same name already exists: `{
-                    name}`.",
+                description=f"A command with the same name already exists: `{name}`.",
             )
 
         elif name in self.bot.aliases:
             embed = discord.Embed(
                 title="Error",
                 color=self.bot.error_color,
-                description=f"Another alias with the same name already exists: `{
-                    name}`.",
+                description=f"Another alias with the same name already exists: `{name}`.",
             )
 
         elif name in self.bot.snippets:
             embed = discord.Embed(
                 title="Error",
                 color=self.bot.error_color,
-                description=f"A snippet with the same name already exists: `{
-                    name}`.",
+                description=f"A snippet with the same name already exists: `{name}`.",
             )
 
         elif len(name) > 120:
@@ -1231,8 +1224,7 @@ class Utility(commands.Cog):
             embed = discord.Embed(
                 title="Error",
                 color=self.bot.error_color,
-                description=f"The referenced command does not exist: `{
-                    command_name}`.",
+                description=f"The referenced command does not exist: `{command_name}`.",
             )
             return await ctx.send(embed=embed)
 
@@ -1241,8 +1233,7 @@ class Utility(commands.Cog):
             embed = discord.Embed(
                 title="Error",
                 color=self.bot.error_color,
-                description=f"The referenced level does not exist: `{
-                    level_name}`.",
+                description=f"The referenced level does not exist: `{level_name}`.",
             )
         else:
             logger.info(
@@ -1304,8 +1295,7 @@ class Utility(commands.Cog):
             embed = discord.Embed(
                 title="Error",
                 color=self.bot.error_color,
-                description=f"The referenced {
-                    type_} does not exist: `{name}`.",
+                description=f"The referenced {type_} does not exist: `{name}`.",
             )
             return await ctx.send(embed=embed)
 
@@ -1383,8 +1373,8 @@ class Utility(commands.Cog):
                 embed = discord.Embed(
                     title="Error",
                     color=self.bot.error_color,
-                    description=f"The command permission level was never overridden: `{
-                        name}`, " f"current permission level is {perm.name}.",
+                    description=f"The command permission level was never overridden: `{name}`, "
+                    f"current permission level is {perm.name}.",
                 )
             else:
                 logger.info("Restored command permission level for `%s`.", name)
@@ -1394,8 +1384,7 @@ class Utility(commands.Cog):
                 embed = discord.Embed(
                     title="Success",
                     color=self.bot.main_color,
-                    description=f"Command permission level for `{
-                        name}` was successfully restored to {perm.name}.",
+                    description=f"Command permission level for `{name}` was successfully restored to {perm.name}.",
                 )
             return await ctx.send(embed=embed)
 
@@ -1409,8 +1398,7 @@ class Utility(commands.Cog):
                 embed = discord.Embed(
                     title="Error",
                     color=self.bot.error_color,
-                    description=f"The referenced level does not exist: `{
-                        name}`.",
+                    description=f"The referenced level does not exist: `{name}`.",
                 )
                 return await ctx.send(embed=embed)
             name = level.name
@@ -1560,14 +1548,12 @@ class Utility(commands.Cog):
 
             embeds = [
                 discord.Embed(
-                    title=f"{
-                        mention} has permission with the following commands:",
+                    title=f"{mention} has permission with the following commands:",
                     description=desc_cmd,
                     color=self.bot.main_color,
                 ),
                 discord.Embed(
-                    title=f"{
-                        mention} has permission with the following permission levels:",
+                    title=f"{mention} has permission with the following permission levels:",
                     description=desc_level,
                     color=self.bot.main_color,
                 ),
@@ -1626,16 +1612,14 @@ class Utility(commands.Cog):
                     embed = discord.Embed(
                         title="Error",
                         color=self.bot.error_color,
-                        description=f"The command permission level was never overridden: `{
-                            name}`, "
+                        description=f"The command permission level was never overridden: `{name}`, "
                         f"current permission level is {perm.name}.",
                     )
                 else:
                     embed = discord.Embed(
                         title="Success",
                         color=self.bot.main_color,
-                        description=f'Permission override for command "{
-                            name}" is "{perm.name}".',
+                        description=f'Permission override for command "{name}" is "{perm.name}".',
                     )
 
                 return await ctx.send(embed=embed)
@@ -1658,8 +1642,7 @@ class Utility(commands.Cog):
                     embed = discord.Embed(
                         title="Error",
                         color=self.bot.error_color,
-                        description=f"The referenced {
-                            user_or_role} does not exist: `{name}`.",
+                        description=f"The referenced {user_or_role} does not exist: `{name}`.",
                     )
                     return await ctx.send(embed=embed)
 
@@ -1772,8 +1755,7 @@ class Utility(commands.Cog):
             embed = discord.Embed(
                 title="Error",
                 color=self.bot.error_color,
-                description=f"Another autotrigger with the same name already exists: `{
-                    keyword}`.",
+                description=f"Another autotrigger with the same name already exists: `{keyword}`.",
             )
         else:
             # command validation
@@ -1792,8 +1774,7 @@ class Utility(commands.Cog):
                 embed = discord.Embed(
                     title="Success",
                     color=self.bot.main_color,
-                    description=f"Keyword `{
-                        keyword}` has been linked to `{command}`.",
+                    description=f"Keyword `{keyword}` has been linked to `{command}`.",
                 )
             else:
                 embed = discord.Embed(
@@ -1828,8 +1809,7 @@ class Utility(commands.Cog):
                 embed = discord.Embed(
                     title="Success",
                     color=self.bot.main_color,
-                    description=f"Keyword `{
-                        keyword}` has been linked to `{command}`.",
+                    description=f"Keyword `{keyword}` has been linked to `{command}`.",
                 )
             else:
                 embed = discord.Embed(
@@ -1880,8 +1860,7 @@ class Utility(commands.Cog):
                 embed = discord.Embed(
                     title=f"{'Regex ' if regex else ''}Keyword Found",
                     color=self.bot.main_color,
-                    description=f"autotrigger keyword `{
-                        keyword}` found. Command executed: `{alias}`",
+                    description=f"autotrigger keyword `{keyword}` found. Command executed: `{alias}`",
                 )
                 return await ctx.send(embed=embed)
 
@@ -1911,8 +1890,7 @@ class Utility(commands.Cog):
                 discord.Embed(
                     title="No autotrigger set",
                     color=self.bot.error_color,
-                    description=f"Use `{
-                        self.bot.prefix}autotrigger add` to add new autotriggers.",
+                    description=f"Use `{self.bot.prefix}autotrigger add` to add new autotriggers.",
                 )
             )
 
@@ -2008,7 +1986,6 @@ class Utility(commands.Cog):
                         name="Merge Commit", value=f"[`{short_sha}`]({html_url})"
                     )
                 else:
-
                     embed = discord.Embed(
                         title="Already up to date",
                         description="No further updates required",
@@ -2078,23 +2055,6 @@ class Utility(commands.Cog):
                     )
                     embed.set_footer(text="Force update")
                     await ctx.send(embed=embed)
-
-    @commands.Cog.listener()
-    async def on_message(self, message: discord.Message):
-        if message.author == self.bot.user or message.channel.id != BOTTRAP_CHANNEL_ID:
-            return
-
-        if not message.guild:
-            return
-
-        try:
-            await message.author.ban(
-                reason="bot trap triggered", delete_message_seconds=3600
-            )
-        except discord.Forbidden:
-            return
-        except discord.HTTPException as e:
-            logger.error("failed to ban user: %s", e)
 
 
 def setup(bot):
