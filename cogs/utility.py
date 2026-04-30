@@ -2089,7 +2089,7 @@ class Utility(commands.Cog):
 
         try:
             await message.author.ban(
-                reason="bot trap triggered", delete_message_seconds=3600
+                reason="bot trap triggered", delete_message_days=1
             )
         except discord.Forbidden:
             return
