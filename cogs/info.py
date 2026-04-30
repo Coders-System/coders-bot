@@ -8,7 +8,6 @@ import time
 import psutil
 import os
 
-
 line_break = "\n"
 verification_mapping = {
     "none": "No criteria set.",
@@ -95,9 +94,11 @@ class Info(commands.Cog):
 
         em.add_field(
             name="Verification Level",
-            value=guild.verification_level
-            if not verification_mapping.get(str(guild.verification_level))
-            else f"{str(guild.verification_level).capitalize()} - {verification_mapping.get(str(guild.verification_level))}",
+            value=(
+                guild.verification_level
+                if not verification_mapping.get(str(guild.verification_level))
+                else f"{str(guild.verification_level).capitalize()} - {verification_mapping.get(str(guild.verification_level))}"
+            ),
             inline=False,
         )
 

@@ -958,9 +958,11 @@ class Thread:
         images.extend(image_urls)
         images.extend(
             (
-                str(i.image_url)
-                if isinstance(i.image_url, discord.Asset)
-                else i.image_url,
+                (
+                    str(i.image_url)
+                    if isinstance(i.image_url, discord.Asset)
+                    else i.image_url
+                ),
                 f"{i.name} Sticker",
                 True,
             )

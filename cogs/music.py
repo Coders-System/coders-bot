@@ -282,9 +282,9 @@ class Music(commands.Cog):
         playing: lavalink.AudioTrack = player.current
         desc = f"[**{playing.title}**]({playing.uri}) (Requested by {ctx.guild.get_member(playing.requester).mention})\n\n"
         position = ["=" for x in range(30)]
-        position[
-            math.floor(player.position / playing.duration * len(position))
-        ] = "**>**"
+        position[math.floor(player.position / playing.duration * len(position))] = (
+            "**>**"
+        )
         embed = discord.Embed(
             title="Currently Playing",
             color=discord.Color.blue(),

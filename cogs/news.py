@@ -6,7 +6,6 @@ import discord
 import os
 import aiohttp
 
-
 line_break = "\n"
 meaningful_bool = lambda x: "Yes" if x else "No"
 
